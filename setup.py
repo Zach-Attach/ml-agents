@@ -48,7 +48,7 @@ setup(
         "Pillow>=4.2.1",
         "protobuf>=3.6,<3.21",
         "pyyaml>=3.1.0",
-        "gym>=0.21.0",
+        "gymnasium",
         "pettingzoo==1.15.0",
         "numpy>=1.23.5,<1.24.0",
         "filelock>=3.4.0",
