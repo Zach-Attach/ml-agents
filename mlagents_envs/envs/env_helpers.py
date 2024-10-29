@@ -64,13 +64,3 @@ def _unwrap_batch_steps(batch_steps, behavior_name):
         infos[agent_id]["interrupted"] = termination_batch.interrupted[i]
     id_map = {agent_id: i for i, agent_id in enumerate(decision_id)}
     return agents, obs, dones, rewards, cumulative_rewards, infos, id_map
-
-
-def _parse_behavior(full_behavior):
-    parsed = urlparse(full_behavior)
-    name = parsed.path
-    ids = parse_qs(parsed.query)
-    team_id: int = 0
-    if "team" in ids:
-        team_id = int(ids["team"][0])
-    return name, team_id
