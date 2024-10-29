@@ -49,7 +49,7 @@ setup(
         "protobuf>=3.6,<3.21",
         "pyyaml>=3.1.0",
         "gymnasium",
-        "pettingzoo==1.15.0",
+        "pettingzoo",
         "numpy>=1.23.5,<1.24.0",
         "filelock>=3.4.0",
     ],
