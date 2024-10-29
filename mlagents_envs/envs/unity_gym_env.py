@@ -20,7 +20,7 @@ class UnityGymException(error.Error):
 
 
 logger = logging_util.get_logger(__name__)
-GymStepResult = Tuple[np.ndarray, float, bool, Dict]
+GymStepResult = Tuple[np.ndarray, float, bool, bool, Dict]
 
 
 class UnityToGymWrapper(gym.Env):
@@ -163,7 +163,7 @@ class UnityToGymWrapper(gym.Env):
         self.game_over = False
 
         res: GymStepResult = self._single_step(decision_step)
-        return res[0]
+        return res[0], res[4]
 
     def step(self, action: List[Any]) -> GymStepResult:
         """Run one timestep of the environment's dynamics. When end of
@@ -229,7 +229,7 @@ class UnityToGymWrapper(gym.Env):
 
         done = isinstance(info, TerminalSteps)
 
-        return (default_observation, info.reward[0], done, {"step": info})
+        return (default_observation, info.reward[0], False, done, {"step": info})
 
     def _preprocess_single(self, single_visual_obs: np.ndarray) -> np.ndarray:
         if self.uint8_visual:
