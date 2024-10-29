@@ -151,7 +151,7 @@ class UnityToGymWrapper(gym.Env):
         else:
             self._observation_space = list_spaces[0]  # only return the first one
 
-    def reset(self) -> Union[List[np.ndarray], np.ndarray]:
+    def reset(self) -> Union[Tuple[List[np.ndarray], Dict], Tuple[np.ndarray, Dict]:
         """Resets the state of the environment and returns an initial observation.
         Returns: observation (object/list): the initial observation of the
         space.
