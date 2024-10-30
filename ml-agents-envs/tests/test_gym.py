@@ -23,14 +23,17 @@ def test_gym_wrapper():
         mock_env, mock_spec, mock_decision_step, mock_terminal_step
     )
     env = UnityToGymWrapper(mock_env)
-    assert isinstance(env.reset(), np.ndarray)
+    reset_obs, reset_info = env.reset()
+    assert isinstance(reset_obs, np.ndarray)
+    assert isinstance(reset_info, dict)
     actions = env.action_space.sample()
     assert actions.shape[0] == 2
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert env.observation_space.contains(obs)
     assert isinstance(obs, np.ndarray)
     assert isinstance(rew, float)
-    assert isinstance(done, (bool, np.bool_))
+    assert isinstance(term, (bool, np.bool_))
+    assert isinstance(trunc, (bool, np.bool_))
     assert isinstance(info, dict)
 
 
@@ -108,14 +111,17 @@ def test_gym_wrapper_visual(use_uint8):
 
     env = UnityToGymWrapper(mock_env, uint8_visual=use_uint8)
     assert isinstance(env.observation_space, spaces.Box)
-    assert isinstance(env.reset(), np.ndarray)
+    reset_obs, reset_info = env.reset()
+    assert isinstance(reset_obs, np.ndarray)
+    assert isinstance(reset_info, dict)
     actions = env.action_space.sample()
     assert actions.shape[0] == 2
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert env.observation_space.contains(obs)
     assert isinstance(obs, np.ndarray)
     assert isinstance(rew, float)
-    assert isinstance(done, (bool, np.bool_))
+    assert isinstance(term, (bool, np.bool_))
+    assert isinstance(trunc, (bool, np.bool_))
     assert isinstance(info, dict)
 
 
@@ -137,32 +143,35 @@ def test_gym_wrapper_single_visual_and_vector(use_uint8):
     env = UnityToGymWrapper(mock_env, uint8_visual=use_uint8, allow_multiple_obs=True)
     assert isinstance(env.observation_space, spaces.Tuple)
     assert len(env.observation_space) == 2
-    reset_obs = env.reset()
+    reset_obs, reset_info = env.reset()
     assert isinstance(reset_obs, list)
+    assert isinstance(reset_info, dict)
     assert len(reset_obs) == 2
     assert all(isinstance(ob, np.ndarray) for ob in reset_obs)
     assert reset_obs[-1].shape == (3,)
     assert len(reset_obs[0].shape) == 3
     actions = env.action_space.sample()
     assert actions.shape == (2,)
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert isinstance(obs, list)
     assert len(obs) == 2
     assert all(isinstance(ob, np.ndarray) for ob in obs)
     assert reset_obs[-1].shape == (3,)
     assert isinstance(rew, float)
-    assert isinstance(done, (bool, np.bool_))
+    assert isinstance(term, (bool, np.bool_))
+    assert isinstance(trunc, (bool, np.bool_))
     assert isinstance(info, dict)
 
     # check behavior for allow_multiple_obs = False
     env = UnityToGymWrapper(mock_env, uint8_visual=use_uint8, allow_multiple_obs=False)
     assert isinstance(env.observation_space, spaces.Box)
-    reset_obs = env.reset()
+    reset_obs, reset_info = env.reset()
     assert isinstance(reset_obs, np.ndarray)
+    assert isinstance(reset_info, dict)
     assert len(reset_obs.shape) == 3
     actions = env.action_space.sample()
     assert actions.shape == (2,)
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert isinstance(obs, np.ndarray)
 
 
@@ -184,28 +193,31 @@ def test_gym_wrapper_multi_visual_and_vector(use_uint8):
     env = UnityToGymWrapper(mock_env, uint8_visual=use_uint8, allow_multiple_obs=True)
     assert isinstance(env.observation_space, spaces.Tuple)
     assert len(env.observation_space) == 3
-    reset_obs = env.reset()
+    reset_obs, reset_info = env.reset()
     assert isinstance(reset_obs, list)
+    assert isinstance(reset_info, dict)
     assert len(reset_obs) == 3
     assert all(isinstance(ob, np.ndarray) for ob in reset_obs)
     assert reset_obs[-1].shape == (3,)
     actions = env.action_space.sample()
     assert actions.shape == (2,)
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert all(isinstance(ob, np.ndarray) for ob in obs)
     assert isinstance(rew, float)
-    assert isinstance(done, (bool, np.bool_))
+    assert isinstance(term, (bool, np.bool_))
+    assert isinstance(trunc, (bool, np.bool_))
     assert isinstance(info, dict)
 
     # check behavior for allow_multiple_obs = False
     env = UnityToGymWrapper(mock_env, uint8_visual=use_uint8, allow_multiple_obs=False)
     assert isinstance(env.observation_space, spaces.Box)
-    reset_obs = env.reset()
+    reset_obs, reset_info = env.reset()
     assert isinstance(reset_obs, np.ndarray)
+    assert isinstance(reset_info, dict)
     assert len(reset_obs.shape) == 3
     actions = env.action_space.sample()
     assert actions.shape == (2,)
-    obs, rew, done, info = env.step(actions)
+    obs, rew, term, trunc, info = env.step(actions)
     assert isinstance(obs, np.ndarray)
 
 
