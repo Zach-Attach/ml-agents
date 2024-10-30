@@ -179,20 +179,21 @@ class UnityToGymWrapper(gym.Env):
         """Run one timestep of the environment's dynamics. When end of
         episode is reached, you are responsible for calling `reset()`
         to reset this environment's state.
-        Accepts an action and returns a tuple (observation, reward, done, info).
+        Accepts an action and returns a tuple (observation, reward, terminated, truncated, info).
         Args:
             action (object/list): an action provided by the environment
         Returns:
             observation (object/list): agent's observation of the current environment
             reward (float/list) : amount of reward returned after previous action
-            done (boolean/list): whether the episode has ended.
+            terminated (boolean/list): whether the episode has ended.
+            truncated (boolean/list): whether the episode was truncated.
             info (dict): contains auxiliary diagnostic information.
         """
         if self.game_over:
             raise UnityGymException(
                 "You are calling 'step()' even though this environment has already "
-                "returned done = True. You must always call 'reset()' once you "
-                "receive 'done = True'."
+                "returned terminated = True. You must always call 'reset()' once you "
+                "receive 'terminated = True'."
             )
         if self._flattener is not None:
             # Translate action into list
@@ -237,9 +238,9 @@ class UnityToGymWrapper(gym.Env):
             visual_obs = self._get_vis_obs_list(info)
             self.visual_obs = self._preprocess_single(visual_obs[0][0])
 
-        done = isinstance(info, TerminalSteps)
+        terminated = isinstance(info, TerminalSteps)
 
-        return (default_observation, info.reward[0], done, False, {"step": info})
+        return (default_observation, info.reward[0], terminated, False, {"step": info})
 
     def _preprocess_single(self, single_visual_obs: np.ndarray) -> np.ndarray:
         if self.uint8_visual:
