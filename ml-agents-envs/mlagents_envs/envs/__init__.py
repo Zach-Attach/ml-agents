@@ -1,3 +1,6 @@
+from .unity_aec_env import UnityAECEnv
+from .unity_parallel_env import UnityParallelEnv
+
 from mlagents_envs.registry import default_registry
 from mlagents_envs.envs.pettingzoo_env_factory import logger, PettingZooEnvFactory
 
