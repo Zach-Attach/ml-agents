@@ -1,8 +1,8 @@
 # Unity ML-Agents Gym Wrapper
 
 A common way in which machine learning researchers interact with simulation
-environments is via a wrapper provided by OpenAI called `gym`. For more
-information on the gym interface, see [here](https://github.com/openai/gym).
+environments is via a wrapper provided by the Faram Foundation called `gymnasium`
+(often referred to as gym). For more information on the gym interface, see [here](https://github.com/openai/gym).
 
 We provide a gym wrapper and instructions for using it with existing machine
 learning algorithms which utilize gym. Our wrapper provides interfaces on top of
@@ -93,7 +93,7 @@ observation, a single discrete action and a single Agent in the scene.
 Add the following code to the `train_unity.py` file:
 
 ```python
-import gym
+import gymnasium as gym
 
 from baselines import deepq
 from baselines import logger

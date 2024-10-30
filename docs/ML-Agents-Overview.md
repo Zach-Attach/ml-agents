@@ -177,10 +177,11 @@ The ML-Agents Toolkit contains five high-level components:
   and options outlined in this document. The Python Trainers interface solely
   with the Python Low-Level API.
 - **Gym Wrapper** (not pictured). A common way in which machine learning
-  researchers interact with simulation environments is via a wrapper provided by
-  OpenAI called [gym](https://github.com/openai/gym). We provide a gym wrapper
-  in the `ml-agents-envs` package and [instructions](Python-Gym-API.md) for using
-  it with existing machine learning algorithms which utilize gym.
+  researchers interact with simulation environments is via a wrapper called
+  [gymnasium](https://github.com/Farama-Foundation/Gymnasium) (often referred to
+  as gym). We provide a gymn wrapper in the `ml-agents-envs` package and
+  [instructions](Python-Gym-API.md) for using it with existing machine learning
+  algorithms which utilize gym.
 - **PettingZoo Wrapper** (not pictured) PettingZoo is python API for
   interacting with multi-agent simulation environments that provides a
   gym-like interface. We provide a PettingZoo wrapper for Unity ML-Agents
