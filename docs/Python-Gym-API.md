@@ -2,7 +2,7 @@
 
 A common way in which machine learning researchers interact with simulation
 environments is via a wrapper provided by the Faram Foundation called `gymnasium`
-(often referred to as gym). For more information on the gym interface, see [here](https://github.com/openai/gym).
+(formally known as gym). For more information on the gym interface, see [here](https://github.com/Farama-Foundation/Gymnasium).
 
 We provide a gym wrapper and instructions for using it with existing machine
 learning algorithms which utilize gym. Our wrapper provides interfaces on top of
