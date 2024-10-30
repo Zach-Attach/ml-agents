@@ -151,11 +151,21 @@ class UnityToGymWrapper(gym.Env):
         else:
             self._observation_space = list_spaces[0]  # only return the first one
 
-    def reset(self) -> Union[Tuple[List[np.ndarray], Dict], Tuple[np.ndarray, Dict]]:
+    def reset(self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None) -> Union[Tuple[List[np.ndarray], Dict], Tuple[np.ndarray, Dict]]:
         """Resets the state of the environment and returns an initial observation.
-        Returns: observation (object/list): the initial observation of the
+        Args:
+            seed (int, optional): The seed for the environment. Note that this does not set the seed for the Unity Environment.
+            options (dict, optional): Optional dict containing options for the environment. (Currently not implemented)
+        Returns: 
+            observation (object/list): the initial observation of the
         space.
+            info (dict): contains auxiliary diagnostic information.
         """
+        if options is not None:
+            logger.warning("Options are currently unsupported.")
+        if seed is not None:
+            super().reset(seed=seed)
+            logger.warning("reset(seed) does not change the seed in the Unity Environment or the action space")
         self._env.reset()
         decision_step, _ = self._env.get_steps(self.name)
         n_agents = len(decision_step)
@@ -289,13 +299,6 @@ class UnityToGymWrapper(gym.Env):
         garbage collected or when the program exits.
         """
         self._env.close()
-
-    def seed(self, seed: Any = None) -> None:
-        """Sets the seed for this env's random number generator(s).
-        Currently not implemented.
-        """
-        logger.warning("Could not seed environment %s", self.name)
-        return
 
     @staticmethod
     def _check_agents(n_agents: int) -> None:
