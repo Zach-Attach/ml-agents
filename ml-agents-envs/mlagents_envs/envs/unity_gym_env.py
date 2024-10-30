@@ -229,7 +229,7 @@ class UnityToGymWrapper(gym.Env):
 
         done = isinstance(info, TerminalSteps)
 
-        return (default_observation, info.reward[0], done, done, {"step": info})
+        return (default_observation, info.reward[0], done, False, {"step": info})
 
     def _preprocess_single(self, single_visual_obs: np.ndarray) -> np.ndarray:
         if self.uint8_visual:
