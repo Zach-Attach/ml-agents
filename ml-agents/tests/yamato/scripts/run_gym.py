@@ -17,11 +17,13 @@ def test_run_environment(env_name):
         print(str(env))
 
         # Reset the environment
-        initial_observations = env.reset()
+        initial_observations, initial_info = env.reset()
 
         if len(env.observation_space.shape) == 1:
             # Examine the initial vector observation
             print(f"Agent observations look like: \n{initial_observations}")
+
+        print(f"Agent info look like: \n{initial_info}")
 
         for _episode in range(10):
             env.reset()
