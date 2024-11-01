@@ -1,34 +1,47 @@
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, TypeVar
 from gymnasium import error
 from mlagents_envs.base_env import BaseEnv
 from pettingzoo import ParallelEnv
 
 from mlagents_envs.envs.unity_pettingzoo_base_env import UnityPettingzooBaseEnv
 
+ObsType = TypeVar("ObsType")
+ActionType = TypeVar("ActionType")
+AgentID = TypeVar("AgentID")
 
-class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv):
+class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, ActionType]):
     """
     Unity Parallel (PettingZoo) environment wrapper.
     """
 
-    def __init__(self, env: BaseEnv, seed: Optional[int] = None):
+    def __init__(self, env: BaseEnv, uint8_visual: bool = False, seed: Optional[int] = None):
         """
         Initializes a Unity Parallel environment wrapper.
 
         :param env: The UnityEnvironment that is being wrapped.
         :param seed: The seed for the action spaces of the agents.
         """
-        super().__init__(env, seed)
+        super().__init__(env, uint8_visual, seed)
 
-    def reset(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    def reset(
+        self,
+        seed: int | None = None,
+        options: dict | None = None,
+    ) -> Tuple[Dict[AgentID, ObsType], Dict[AgentID, Dict]]:
         """
         Resets the environment.
         """
-        super().reset()
+        super().reset(seed, options)
 
-        return self._observations, self._infos
+        return self._observations
 
-    def step(self, actions: Dict[str, Any]) -> Tuple:
+    def step(self, actions: Dict[AgentID, ActionType]) -> Tuple[
+        Dict[AgentID, ObsType],
+        Dict[AgentID, float],
+        Dict[AgentID, bool],
+        Dict[AgentID, bool],
+        Dict[AgentID, Dict],
+    ]:
         self._assert_loaded()
         if len(self._live_agents) <= 0 and actions:
             raise error.Error(
@@ -40,8 +53,8 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv):
             self._process_action(current_agent, action)
 
         # Reset reward
-        for k in self._rewards.keys():
-            self._rewards[k] = 0
+        for k in self.rewards.keys():
+            self.rewards[k] = 0
 
         # Step environment
         self._step()
@@ -50,4 +63,4 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv):
         self._cleanup_agents()
         self._live_agents.sort()  # unnecessary, only for passing API test
 
-        return self._observations, self._rewards, self._dones, False, self._infos
+        return self._observations, self.rewards, self.terminations, self.truncations, self.infos

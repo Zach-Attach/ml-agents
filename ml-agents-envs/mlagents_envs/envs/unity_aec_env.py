@@ -11,14 +11,14 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
     Unity AEC (PettingZoo) environment wrapper.
     """
 
-    def __init__(self, env: BaseEnv, seed: Optional[int] = None):
+    def __init__(self, env: BaseEnv, uint8_visual: bool = False, seed: Optional[int] = None):
         """
         Initializes a Unity AEC environment wrapper.
 
         :param env: The UnityEnvironment that is being wrapped.
         :param seed: The seed for the action spaces of the agents.
         """
-        super().__init__(env, seed)
+        super().__init__(env, uint8_visual, seed)
 
     def step(self, action: Any) -> None:
         """
@@ -33,15 +33,15 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
             )
 
         # Process action
-        current_agent = self._agents[self._agent_index]
+        current_agent = self.agents[self._agent_index]
         self._process_action(current_agent, action)
 
         self._agent_index += 1
         # Reset reward
-        for k in self._rewards.keys():
-            self._rewards[k] = 0
+        for k in self.rewards.keys():
+            self.rewards[k] = 0
 
-        if self._agent_index >= len(self._agents) and self.num_agents > 0:
+        if self._agent_index >= len(self.agents) and self.num_agents > 0:
             # The index is too high, time to set the action for the agents we have
             self._step()
             self._live_agents.sort()  # unnecessary, only for passing API test
@@ -52,21 +52,22 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         """
         return (
             self._observations[agent_id],
-            self._cumm_rewards[agent_id],
-            self._dones[agent_id],
-            self._infos[agent_id],
+            self._cumulative_rewards[agent_id],
+            self.terminations[agent_id],
+            self.truncations[agent_id],
+            self.infos[agent_id],
         )
 
     def last(self, observe=True):
         """
         returns observation, cumulative reward, done, info for the current agent (specified by self.agent_selection)
         """
-        obs, reward, done, info = self.observe(self._agents[self._agent_index])
+        obs, reward, done, info = self.observe(self.agents[self._agent_index])
         return obs if observe else None, reward, done, info
 
     @property
     def agent_selection(self):
         if not self._live_agents:
             # If we had an agent finish then return that agent even though it isn't alive.
-            return self._agents[0]
-        return self._agents[self._agent_index]
+            return self.agents[0]
+        return self.agents[self._agent_index]
