@@ -77,10 +77,10 @@ class UnityPettingzooBaseEnv:
                 obs_spec = self._env.behavior_specs[behavior_name].observation_specs
                 obs_spaces = tuple(
                     spaces.Box(
-                        low=-np.float32(np.inf),
-                        high=np.float32(np.inf),
+                        low=-np.uint8(np.inf),
+                        high=np.uint8(np.inf),
                         shape=spec.shape,
-                        dtype=np.float32,
+                        dtype=np.uint8,
                     )
                     for spec in obs_spec
                 )
@@ -214,7 +214,7 @@ class UnityPettingzooBaseEnv:
     def _create_empty_actions(self, behavior_name, num_agents):
         a_spec = self._env.behavior_specs[behavior_name].action_spec
         return ActionTuple(
-            np.zeros((num_agents, a_spec.continuous_size), dtype=np.float32),
+            np.zeros((num_agents, a_spec.continuous_size), dtype=np.uint8),
             np.zeros((num_agents, len(a_spec.discrete_branches)), dtype=np.int32),
         )
 
