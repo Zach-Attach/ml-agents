@@ -211,9 +211,13 @@ class UnityPettingzooBaseEnv:
         self._agent_index = 0
 
     def _cleanup_agents(self):
-        for current_agent, done in self.dones.items():
-            if done:
-                self._live_agents.remove(current_agent)
+        _deads_order = [
+            agent
+            for agent in self.agents
+            if (self.terminations[agent] or self.truncations[agent])
+        ]
+        for dead_agent in _deads_order:
+            self._live_agents.remove(dead_agent)
 
     @property
     def side_channel(self) -> Dict[str, Any]:
