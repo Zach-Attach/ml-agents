@@ -42,7 +42,7 @@ class UnityPettingzooBaseEnv:
         self.terminations: Dict[str, bool] = {}  # agent_id: terminated
         self.truncations: Dict[str, bool] = {}  # agent_id: truncated
         self.rewards: Dict[str, float] = {}  # agent_id: reward
-        self._cumulative_rewards: Dict[str, float] = {}  # agent_id: reward
+        self._cumm_rewards: Dict[str, float] = {}  # agent_id: reward
         self.infos: Dict[str, Dict] = {}  # agent_id: info
         self.action_spaces: Dict[str, spaces.Space] = {}  # behavior_name: action_space
         self.observation_spaces: Dict[
@@ -197,7 +197,7 @@ class UnityPettingzooBaseEnv:
             del self.terminations[current_agent]
             del self.truncations[current_agent]
             del self.rewards[current_agent]
-            del self._cumulative_rewards[current_agent]
+            del self._cumm_rewards[current_agent]
             del self.infos[current_agent]
 
     def _step(self):
@@ -209,7 +209,7 @@ class UnityPettingzooBaseEnv:
             terminations, rewards, cumulative_rewards = self._batch_update(behavior_name)
             self.terminations.update(terminations)
             self.rewards.update(rewards)
-            self._cumulative_rewards.update(cumulative_rewards)
+            self._cumm_rewards.update(cumulative_rewards)
         self._agent_index = 0
 
     def _cleanup_agents(self):
@@ -245,7 +245,7 @@ class UnityPettingzooBaseEnv:
 
     @property
     def _cumulative_rewards(self):
-        return self._cumulative_rewards
+        return self._cumm_rewards
 
     def _reset_states(self):
         self._live_agents = []
@@ -254,7 +254,7 @@ class UnityPettingzooBaseEnv:
         self.terminations = {}
         self.truncations = {}
         self.rewards = {}
-        self._cumulative_rewards = {}
+        self._cumm_rewards = {}
         self.infos = {}
         self._agent_id_to_index = {}
 
@@ -283,7 +283,7 @@ class UnityPettingzooBaseEnv:
         self.terminations = {agent: False for agent in self._agents}
         self.truncations = {agent: False for agent in self._agents}
         self.rewards = {agent: 0 for agent in self._agents}
-        self._cumulative_rewards = {agent: 0 for agent in self._agents}
+        self._cumm_rewards = {agent: 0 for agent in self._agents}
 
     def _batch_update(self, behavior_name):
         current_batch = self.env.get_steps(behavior_name)

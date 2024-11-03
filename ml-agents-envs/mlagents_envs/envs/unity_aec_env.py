@@ -52,7 +52,7 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         """
         return (
             self.observations[agent_id],
-            self._cumulative_rewards[agent_id],
+            self._cumm_rewards[agent_id],
             self.terminations[agent_id],
             self.truncations[agent_id],
             self.infos[agent_id],
