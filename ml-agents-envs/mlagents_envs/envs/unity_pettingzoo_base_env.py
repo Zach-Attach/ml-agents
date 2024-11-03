@@ -31,6 +31,7 @@ class UnityPettingzooBaseEnv:
             for v in self.env._side_channel_manager._side_channels_dict.values()  # type: ignore
         }
 
+        self.render_mode: str = None # Not implemented. Expected in some wrappers.
         self._live_agents: List[str] = []  # agent id for agents alive
         self.agents: List[str] = []  # all agent id in current step
         self.possible_agents: Set[str] = set()  # all agents that have ever appear
@@ -289,13 +290,6 @@ class UnityPettingzooBaseEnv:
         self._agent_id_to_index.update(id_map)
         self.possible_agents.update(agents)
         return terminations, rewards, cumulative_rewards
-
-    def seed(self, seed=None):
-        """
-        Reseeds the environment (making the resulting environment deterministic).
-        `reset()` must be called after `seed()`, and before `step()`.
-        """
-        self._seed = seed
 
     def render(self, mode="human"):
         """
