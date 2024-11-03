@@ -291,7 +291,7 @@ class UnityPettingzooBaseEnv:
         self.possible_agents.update(agents)
         return terminations, rewards, cumulative_rewards
 
-    def render(self, mode="human"):
+    def render(self):
         """
         NOT SUPPORTED.
 
