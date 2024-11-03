@@ -256,6 +256,11 @@ class UnityPettingzooBaseEnv:
         """
         Resets the environment.
         """
+        if seed is not None:
+            logger.warning("Reset seed is currently not supported.")
+        if options is not None:
+            logger.warning("Reset options are currently not supported.")
+
         self._assert_loaded()
         self._agent_index = 0
         self._reset_states()
