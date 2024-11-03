@@ -322,10 +322,6 @@ class UnityPettingzooBaseEnv:
         return dict(self.truncations)
 
     @property
-    def agents(self):
-        return sorted(self._live_agents)
-
-    @property
     def rewards(self):
         return dict(self.rewards)
 
