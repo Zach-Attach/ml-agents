@@ -21,7 +21,6 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
         :param env: The UnityEnvironment that is being wrapped.
         :param seed: The seed for the action spaces of the agents.
         """
-        self.render_mode: str = None # Not implemented. Expected in some wrappers.
         super().__init__(env, uint8_visual, seed)
 
     def reset(

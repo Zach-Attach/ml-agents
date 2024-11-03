@@ -33,6 +33,7 @@ class UnityPettingzooBaseEnv:
             for v in self.env._side_channel_manager._side_channels_dict.values()  # type: ignore
         }
 
+        self.render_mode: str = None # Not implemented. Expected in some wrappers.
         self._live_agents: List[str] = []  # agent id for agents alive
         self.agents: List[str] = []  # all agent id in current step
         self.possible_agents: Set[str] = set()  # all agents that have ever appear
