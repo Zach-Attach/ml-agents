@@ -1,15 +1,13 @@
-from typing import Optional, Dict, Any, Tuple, TypeVar
+from typing import Optional, Dict, Any, Tuple
 from gymnasium import error
 from mlagents_envs.base_env import BaseEnv
 from pettingzoo import ParallelEnv
+from pettingzoo.utils.env import AgentID, ObsType, ActionType
 
 from mlagents_envs.envs.unity_pettingzoo_base_env import UnityPettingzooBaseEnv
 
-ObsType = TypeVar("ObsType")
-ActionType = TypeVar("ActionType")
-AgentID = TypeVar("AgentID")
 
-class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, ActionType]):
+class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv):
     """
     Unity Parallel (PettingZoo) environment wrapper.
     """
@@ -33,7 +31,7 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
         """
         super().reset(seed, options)
 
-        return self.observations
+        return self._observations
 
     def step(self, actions: Dict[AgentID, ActionType]) -> Tuple[
         Dict[AgentID, ObsType],
@@ -53,8 +51,8 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
             self._process_action(current_agent, action)
 
         # Reset reward
-        for k in self.rewards.keys():
-            self.rewards[k] = 0
+        for k in self._rewards.keys():
+            self._rewards[k] = 0
 
         # Step environment
         self._step()
@@ -63,4 +61,4 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
         self._cleanup_agents()
         self._live_agents.sort()  # unnecessary, only for passing API test
 
-        return self.observations, self.rewards, self.terminations, self.truncations, self.infos
+        return self._observations, self._rewards, self._terminations, self._truncations, False, self._infos

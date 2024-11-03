@@ -38,8 +38,8 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
 
         self._agent_index += 1
         # Reset reward
-        for k in self.rewards.keys():
-            self.rewards[k] = 0
+        for k in self._rewards.keys():
+            self._rewards[k] = 0
 
         if self._agent_index >= len(self._agents) and self.num_agents > 0:
             # The index is too high, time to set the action for the agents we have
@@ -51,11 +51,11 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         Returns the observation an agent currently can make. `last()` calls this function.
         """
         return (
-            self.observations[agent_id],
+            self._observations[agent_id],
             self._cumm_rewards[agent_id],
-            self.terminations[agent_id],
-            self.truncations[agent_id],
-            self.infos[agent_id],
+            self._terminations[agent_id],
+            self._truncations[agent_id],
+            self._infos[agent_id],
         )
 
     def last(self, observe=True):
@@ -69,5 +69,5 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
     def agent_selection(self):
         if not self._agents:
             # If we had an agent finish then return that agent even though it isn't alive.
-            return self._possible_agents[0]
+            return self._agents[0]
         return self._agents[self._agent_index]
