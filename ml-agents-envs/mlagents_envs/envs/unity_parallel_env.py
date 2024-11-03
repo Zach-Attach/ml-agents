@@ -33,7 +33,7 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
         """
         super().reset(seed, options)
 
-        return self._observations
+        return self.observations
 
     def step(self, actions: Dict[AgentID, ActionType]) -> Tuple[
         Dict[AgentID, ObsType],
@@ -63,4 +63,4 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv[AgentID, ObsType, Act
         self._cleanup_agents()
         self._live_agents.sort()  # unnecessary, only for passing API test
 
-        return self._observations, self.rewards, self.terminations, self.truncations, self.infos
+        return self.observations, self.rewards, self.terminations, self.truncations, self.infos

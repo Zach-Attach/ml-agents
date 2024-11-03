@@ -51,7 +51,7 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         Returns the observation an agent currently can make. `last()` calls this function.
         """
         return (
-            self._observations[agent_id],
+            self.observations[agent_id],
             self._cumulative_rewards[agent_id],
             self.terminations[agent_id],
             self.truncations[agent_id],

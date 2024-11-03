@@ -35,7 +35,7 @@ class UnityPettingzooBaseEnv:
         self.agents: List[str] = []  # all agent id in current step
         self.possible_agents: Set[str] = set()  # all agents that have ever appear
         self._agent_id_to_index: Dict[str, int] = {}  # agent_id: index in decision step
-        self._observations: Dict[str, np.ndarray] = {}  # agent_id: obs
+        self.observations: Dict[str, np.ndarray] = {}  # agent_id: obs
         self.terminations: Dict[str, bool] = {}  # agent_id: terminated
         self.truncations: Dict[str, bool] = {}  # agent_id: truncated
         self.rewards: Dict[str, float] = {}  # agent_id: reward
@@ -188,7 +188,7 @@ class UnityPettingzooBaseEnv:
                 ] = action.discrete[0]
         else:
             self._live_agents.remove(current_agent)
-            del self._observations[current_agent]
+            del self.observations[current_agent]
             del self.terminations[current_agent]
             del self.truncations[current_agent]
             del self.rewards[current_agent]
@@ -239,7 +239,7 @@ class UnityPettingzooBaseEnv:
     def _reset_states(self):
         self._live_agents = []
         self.agents = []
-        self._observations = {}
+        self.observations = {}
         self.terminations = {}
         self.truncations = {}
         self.rewards = {}
@@ -284,7 +284,7 @@ class UnityPettingzooBaseEnv:
         ) = _unwrap_batch_steps(current_batch, behavior_name)
         self._live_agents += agents
         self.agents += agents
-        self._observations.update(obs)
+        self.observations.update(obs)
         self.infos.update(infos)
         self._agent_id_to_index.update(id_map)
         self.possible_agents.update(agents)
