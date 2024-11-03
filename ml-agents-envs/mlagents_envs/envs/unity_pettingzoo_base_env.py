@@ -4,7 +4,9 @@ import numpy as np
 from gymnasium import error, spaces
 from mlagents_envs.base_env import BaseEnv, ActionTuple
 from mlagents_envs.envs.env_helpers import _agent_id_to_behavior, _unwrap_batch_steps
+from mlagents_envs import logging_util
 
+logger = logging_util.get_logger(__name__)
 
 class UnityPettingzooBaseEnv:
     """
