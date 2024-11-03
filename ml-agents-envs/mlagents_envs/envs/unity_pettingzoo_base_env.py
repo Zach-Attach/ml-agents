@@ -319,24 +319,8 @@ class UnityPettingzooBaseEnv:
         pass
 
     @property
-    def terminations(self):
-        return dict(self.terminations)
-    
-    @property
-    def truncations(self):
-        return dict(self.truncations)
-
-    @property
     def agents(self):
         return sorted(self._live_agents)
-
-    @property
-    def rewards(self):
-        return dict(self.rewards)
-
-    @property
-    def infos(self):
-        return dict(self.infos)
 
     @property
     def possible_agents(self):
