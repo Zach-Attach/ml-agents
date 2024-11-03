@@ -27,13 +27,13 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         :param action: The action for the active agent
         """
         self._assert_loaded()
-        if len(self._live_agents) <= 0:
+        if len(self._agents) <= 0:
             raise error.Error(
                 "You must reset the environment before you can perform a step"
             )
 
         # Process action
-        current_agent = self.agents[self._agent_index]
+        current_agent = self._agents[self._agent_index]
         self._process_action(current_agent, action)
 
         self._agent_index += 1
@@ -41,10 +41,10 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         for k in self.rewards.keys():
             self.rewards[k] = 0
 
-        if self._agent_index >= len(self.agents) and self.num_agents > 0:
+        if self._agent_index >= len(self._agents) and self.num_agents > 0:
             # The index is too high, time to set the action for the agents we have
             self._step()
-            self._live_agents.sort()  # unnecessary, only for passing API test
+            self._agents.sort()  # unnecessary, only for passing API test
 
     def observe(self, agent_id):
         """
@@ -62,12 +62,12 @@ class UnityAECEnv(UnityPettingzooBaseEnv, AECEnv):
         """
         returns observation, cumulative reward, done, info for the current agent (specified by self.agent_selection)
         """
-        obs, reward, done, info = self.observe(self.agents[self._agent_index])
+        obs, reward, done, info = self.observe(self._agents[self._agent_index])
         return obs if observe else None, reward, done, info
 
     @property
     def agent_selection(self):
-        if not self._live_agents:
+        if not self._agents:
             # If we had an agent finish then return that agent even though it isn't alive.
-            return self.agents[0]
-        return self.agents[self._agent_index]
+            return self._possible_agents[0]
+        return self._agents[self._agent_index]

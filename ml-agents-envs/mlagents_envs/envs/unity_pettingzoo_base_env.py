@@ -35,8 +35,8 @@ class UnityPettingzooBaseEnv:
 
         self.render_mode: str = None # Not implemented. Expected in some wrappers.
         self._live_agents: List[str] = []  # agent id for agents alive
-        self.agents: List[str] = []  # all agent id in current step
-        self.possible_agents: Set[str] = set()  # all agents that have ever appear
+        self._agents: List[str] = []  # all agent id in current step
+        self._possible_agents: Set[str] = set()  # all agents that have ever appear
         self._agent_id_to_index: Dict[str, int] = {}  # agent_id: index in decision step
         self.observations: Dict[str, np.ndarray] = {}  # agent_id: obs
         self.terminations: Dict[str, bool] = {}  # agent_id: terminated
@@ -68,7 +68,7 @@ class UnityPettingzooBaseEnv:
         """
         return {
             agent_id: self.observation_spaces[_agent_id_to_behavior(agent_id)]
-            for agent_id in self.possible_agents
+            for agent_id in self._possible_agents
         }
 
     def observation_space(self, agent: str) -> Optional[spaces.Space]:
@@ -112,7 +112,7 @@ class UnityPettingzooBaseEnv:
         """
         return {
             agent_id: self.action_spaces[_agent_id_to_behavior(agent_id)]
-            for agent_id in self.possible_agents
+            for agent_id in self._possible_agents
         }
 
     def action_space(self, agent: str) -> Optional[spaces.Space]:
@@ -191,6 +191,8 @@ class UnityPettingzooBaseEnv:
                 ] = action.discrete[0]
         else:
             self._live_agents.remove(current_agent)
+            self._agents.remove(current_agent)
+            self._agents.sort()
             del self.observations[current_agent]
             del self.terminations[current_agent]
             del self.truncations[current_agent]
@@ -213,11 +215,13 @@ class UnityPettingzooBaseEnv:
     def _cleanup_agents(self):
         _deads_order = [
             agent
-            for agent in self.agents
+            for agent in self._agents
             if (self.terminations[agent] or self.truncations[agent])
         ]
         for dead_agent in _deads_order:
             self._live_agents.remove(dead_agent)
+            self._agents.remove(dead_agent)
+            self._agents.sort()
 
     @property
     def side_channel(self) -> Dict[str, Any]:
@@ -245,7 +249,7 @@ class UnityPettingzooBaseEnv:
 
     def _reset_states(self):
         self._live_agents = []
-        self.agents = []
+        self._agents = []
         self.observations = {}
         self.terminations = {}
         self.truncations = {}
@@ -270,15 +274,16 @@ class UnityPettingzooBaseEnv:
         self._assert_loaded()
         self._agent_index = 0
         self._reset_states()
-        self.possible_agents = set()
+        self._possible_agents = set()
         self.env.reset()
         for behavior_name in self.env.behavior_specs.keys():
             _, _, _ = self._batch_update(behavior_name)
         self._live_agents.sort()  # unnecessary, only for passing API test
-        self.terminations = {agent: False for agent in self.agents}
-        self.truncations = {agent: False for agent in self.agents}
-        self.rewards = {agent: 0 for agent in self.agents}
-        self._cumulative_rewards = {agent: 0 for agent in self.agents}
+        self._agents.sort()  # unnecessary, only for passing API test
+        self.terminations = {agent: False for agent in self._agents}
+        self.truncations = {agent: False for agent in self._agents}
+        self.rewards = {agent: 0 for agent in self._agents}
+        self._cumulative_rewards = {agent: 0 for agent in self._agents}
 
     def _batch_update(self, behavior_name):
         current_batch = self.env.get_steps(behavior_name)
@@ -295,11 +300,11 @@ class UnityPettingzooBaseEnv:
             id_map,
         ) = _unwrap_batch_steps(current_batch, behavior_name)
         self._live_agents += agents
-        self.agents += agents
+        self._agents += agents
         self.observations.update(obs)
         self.infos.update(infos)
         self._agent_id_to_index.update(id_map)
-        self.possible_agents.update(agents)
+        self._possible_agents.update(agents)
         return terminations, rewards, cumulative_rewards
 
     def render(self):
@@ -322,6 +327,10 @@ class UnityPettingzooBaseEnv:
         return dict(self.truncations)
 
     @property
+    def agents(self):
+        return sorted(self._live_agents)
+
+    @property
     def rewards(self):
         return dict(self.rewards)
 
@@ -331,7 +340,7 @@ class UnityPettingzooBaseEnv:
 
     @property
     def possible_agents(self):
-        return sorted(self.possible_agents)
+        return sorted(self._possible_agents)
 
     def close(self) -> None:
         """
