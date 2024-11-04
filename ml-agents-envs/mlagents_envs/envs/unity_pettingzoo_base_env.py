@@ -25,6 +25,7 @@ class UnityPettingzooBaseEnv:
         self._env = env
         self.metadata = metadata
         self._assert_loaded()
+        self._uint8_visual = uint8_visual
 
         self._agent_index = 0
         self._seed = seed
@@ -86,7 +87,7 @@ class UnityPettingzooBaseEnv:
             "low": np.uint8(0),
             "high": np.uint8(255),
             "dtype": np.uint8
-        } if uint8_visual else {
+        } if self._uint8_visual else {
             "low": -np.float32(np.inf),
             "high": np.float32(np.inf),
             "dtype": np.float32
