@@ -208,6 +208,7 @@ class UnityPettingzooBaseEnv:
         for behavior_name in self._env.behavior_specs.keys():
             terminations, rewards, cumulative_rewards = self._batch_update(behavior_name)
             self._terminations.update(terminations)
+            self._truncations = {agent: False for agent in self._agents}
             self._rewards.update(rewards)
             self._cumm_rewards.update(cumulative_rewards)
         self._agent_index = 0
