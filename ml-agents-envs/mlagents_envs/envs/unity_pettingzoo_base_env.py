@@ -216,7 +216,7 @@ class UnityPettingzooBaseEnv:
         _deads_order = [
             agent
             for agent in self._agents
-            if (self.terminations[agent] or self.truncations[agent])
+            if (self._terminations[agent] or self._truncations[agent])
         ]
         for dead_agent in _deads_order:
             self._live_agents.remove(dead_agent)
