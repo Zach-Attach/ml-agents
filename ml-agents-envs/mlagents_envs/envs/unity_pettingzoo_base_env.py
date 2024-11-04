@@ -298,7 +298,7 @@ class UnityPettingzooBaseEnv:
             cumulative_rewards,
             infos,
             id_map,
-        ) = _unwrap_batch_steps(current_batch, behavior_name)
+        ) = _unwrap_batch_steps(current_batch, behavior_name, self._uint8_visual)
         self._live_agents += agents
         self._agents += agents
         self._observations.update(obs)
