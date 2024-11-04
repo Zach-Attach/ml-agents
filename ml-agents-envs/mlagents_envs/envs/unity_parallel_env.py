@@ -31,7 +31,7 @@ class UnityParallelEnv(UnityPettingzooBaseEnv, ParallelEnv):
         """
         super().reset(seed, options)
 
-        return self._observations
+        return self._observations, self._infos
 
     def step(self, actions: Dict[AgentID, ActionType]) -> Tuple[
         Dict[AgentID, ObsType],
