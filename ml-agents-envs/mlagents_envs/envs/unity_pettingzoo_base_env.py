@@ -307,6 +307,13 @@ class UnityPettingzooBaseEnv:
         self._agent_id_to_index.update(id_map)
         self._possible_agents.update(agents)
         return terminations, rewards, cumulative_rewards
+    
+    def seed(self, seed=None):
+        """
+        Reseeds the environment (making the resulting environment deterministic).
+        `reset()` must be called after `seed()`, and before `step()`.
+        """
+        self._seed = seed
 
     def render(self):
         """
