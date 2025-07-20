@@ -38,7 +38,7 @@ Provides Gym wrapper for Unity Learning Environments.
 #### \_\_init\_\_
 
 ```python
- | __init__(unity_env: BaseEnv, uint8_visual: bool = False, flatten_branched: bool = False, allow_multiple_obs: bool = False, action_space_seed: Optional[int] = None)
+ | __init__(unity_env: BaseEnv, uint8_visual: bool = False, flatten_branched: bool = False, allow_multiple_obs: bool = False, seed: Optional[int] = None)
 ```
 
 Environment initialization
@@ -53,7 +53,7 @@ Environment initialization
     containing the visual observations and the last element containing the array of vector observations.
     If False, returns a single np.ndarray containing either only a single visual observation or the array of
     vector observations.
-- `action_space_seed`: If non-None, will be used to set the random seed on created gym.Space instances.
+- `seed`: If non-None, will be used to set the random seed on created gym.Space instances.
 
 <a name="mlagents_envs.envs.unity_gym_env.UnityToGymWrapper.reset"></a>
 #### reset
