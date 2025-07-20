@@ -34,7 +34,7 @@ class UnityToGymWrapper(gym.Env):
         uint8_visual: bool = False,
         flatten_branched: bool = False,
         allow_multiple_obs: bool = False,
-        action_space_seed: Optional[int] = None,
+        seed: Optional[int] = None,
     ):
         """
         Environment initialization
@@ -46,7 +46,7 @@ class UnityToGymWrapper(gym.Env):
             containing the visual observations and the last element containing the array of vector observations.
             If False, returns a single np.ndarray containing either only a single visual observation or the array of
             vector observations.
-        :param action_space_seed: If non-None, will be used to set the random seed on created gym.Space instances.
+        :param seed: If non-None, will be used to set the random seed on created gym.Space instances.
         """
         self._env = unity_env
 
@@ -124,39 +124,42 @@ class UnityToGymWrapper(gym.Env):
 
             self.action_size = self.group_spec.action_spec.continuous_size
             high = np.array([1] * self.group_spec.action_spec.continuous_size)
-            self._action_space = spaces.Box(-high, high, dtype=np.float32)
+            self._action_space = spaces.Box(-high, high, dtype=np.float32, seed=seed)
         else:
             raise UnityGymException(
                 "The gym wrapper does not provide explicit support for both discrete "
                 "and continuous actions."
             )
 
-        if action_space_seed is not None:
-            self._action_space.seed(action_space_seed)
-
         # Set observations space
         list_spaces: List[gym.Space] = []
         shapes = self._get_vis_obs_shape()
         for shape in shapes:
             if uint8_visual:
-                list_spaces.append(spaces.Box(0, 255, dtype=np.uint8, shape=shape))
+                list_spaces.append(
+                    spaces.Box(0, 255, dtype=np.uint8, shape=shape, seed=seed)
+                )
             else:
-                list_spaces.append(spaces.Box(0, 1, dtype=np.float32, shape=shape))
+                list_spaces.append(
+                    spaces.Box(0, 1, dtype=np.float32, shape=shape, seed=seed)
+                )
         if self._get_vec_obs_size() > 0:
             # vector observation is last
             high = np.array([np.inf] * self._get_vec_obs_size())
-            list_spaces.append(spaces.Box(-high, high, dtype=np.float32))
+            list_spaces.append(spaces.Box(-high, high, dtype=np.float32, seed=seed))
         if self._allow_multiple_obs:
             self._observation_space = spaces.Tuple(list_spaces)
         else:
             self._observation_space = list_spaces[0]  # only return the first one
 
-    def reset(self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None) -> Union[Tuple[List[np.ndarray], Dict], Tuple[np.ndarray, Dict]]:
+    def reset(
+        self, seed: Optional[int] = None, options: Optional[dict[str, Any]] = None
+    ) -> Union[Tuple[List[np.ndarray], Dict], Tuple[np.ndarray, Dict]]:
         """Resets the state of the environment and returns an initial observation.
         Args:
             seed (int, optional): The seed for the environment. Note that this does not set the seed for the Unity Environment.
             options (dict, optional): Optional dict containing options for the environment. (Currently not implemented)
-        Returns: 
+        Returns:
             observation (object/list): the initial observation of the
         space.
             info (dict): contains auxiliary diagnostic information.
@@ -165,7 +168,9 @@ class UnityToGymWrapper(gym.Env):
             logger.warning("Options are currently unsupported.")
         if seed is not None:
             super().reset(seed=seed)
-            logger.warning("reset(seed) does not change the seed in the Unity Environment or the action space")
+            logger.warning(
+                "reset(seed) does not change the seed in the Unity Environment or the action space"
+            )
         self._env.reset()
         decision_step, _ = self._env.get_steps(self.name)
         n_agents = len(decision_step)

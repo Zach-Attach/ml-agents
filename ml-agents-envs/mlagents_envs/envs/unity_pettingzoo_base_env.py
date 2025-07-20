@@ -99,6 +99,7 @@ class UnityPettingzooBaseEnv:
                     spaces.Box(
                         **spaceParams,
                         shape=spec.shape,
+                        seed=self._seed
                     )
                     for spec in obs_spec
                 )
@@ -150,10 +151,8 @@ class UnityPettingzooBaseEnv:
                         continue
                 if act_spec.continuous_size > 0:
                     c_space = spaces.Box(
-                        -1, 1, (act_spec.continuous_size,), dtype=np.float32
+                        -1, 1, (act_spec.continuous_size,), dtype=np.float32, seed=self._seed
                     )
-                    if self._seed is not None:
-                        c_space.seed(self._seed)
                     if len(act_spec.discrete_branches) == 0:
                         self._action_spaces[behavior_name] = c_space
                         continue
