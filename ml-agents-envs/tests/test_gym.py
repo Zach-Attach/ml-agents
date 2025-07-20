@@ -81,7 +81,7 @@ def test_action_space():
     assert env.action_space.n == 5
 
 
-def test_action_space_seed():
+def test_seed():
     mock_env = mock.MagicMock()
     mock_spec = create_mock_group_spec()
     mock_decision_step, mock_terminal_step = create_mock_vector_steps(mock_spec)
@@ -89,11 +89,14 @@ def test_action_space_seed():
         mock_env, mock_spec, mock_decision_step, mock_terminal_step
     )
     actions = []
+    obs = []
     for _ in range(0, 2):
-        env = UnityToGymWrapper(mock_env, action_space_seed=1337)
+        env = UnityToGymWrapper(mock_env, seed=1337)
         env.reset()
         actions.append(env.action_space.sample())
+        obs.append(env.observation_space.sample())
     assert (actions[0] == actions[1]).all()
+    assert (obs[0] == obs[1]).all()
 
 
 @pytest.mark.parametrize("use_uint8", [True, False], ids=["float", "uint8"])
